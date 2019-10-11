@@ -10,14 +10,15 @@ const UserForms = props => {
     if (props.status) {
       setUser([...user, props.status]);
     }
-    
   }, [props.status]);
 
   //form layout
 
   return (
     <div className="user-form">
-      <Form> On Boarding Form
+      <Form>
+        {" "}
+        On Boarding Form
         <Field type="text" name="name" placeholder="Name" />
         {props.touched.name && props.errors.name && (
           <p className="error">{props.errors.name}</p>
@@ -46,10 +47,9 @@ const UserForms = props => {
           component="textarea"
           type="text"
           name="medical"
-          placeholder='Add any medical conditions'
+          placeholder="Add any medical conditions"
           checked={props.values.medical}
         />
-        
         <button type="submit">Submit!</button>
       </Form>
       {user.map(user => (
@@ -70,7 +70,6 @@ const UserForms = props => {
 // and returns a new component function
 
 const mappingProps = props => {
-  console.log(props);
   const userObjects = {
     name: props.name || "",
     email: props.email || "",
@@ -85,34 +84,29 @@ const handleSubmit = (values, { setStatus }) => {
   console.log("submit test");
   Axios.post("https://reqres.in/api/users/", values)
     .then(res => {
-      console.log(res);
+      console.log(res.data);
       setStatus(res.data);
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err)
+    });
 };
 
-// const yupSchema = Yup.object().shape({
+// let yupSchema = Yup.object().shape({
 //   name: Yup.string().requried("Please enter your name"),
 //   email: Yup.string().requried("Please enter your email"),
 //   password: Yup.string().requried("Please enter your password")
 // });
-
-// const yupSchema = Yup.object().shape({
-//   users: Yup.array()
-//     .of(
-//       Yup.object().shape({
-//         name: Yup.string().requried("Please enter your name"),
-//         email: Yup.string().requried("Please enter your email"),
-//         password: Yup.string().requried("Please enter your password"), // these constraints take precedence
-//       })
-//     )
-    
-// });
+let yupSchema = Yup.object().shape({
+  name: Yup.string(),
+  email: Yup.string(),
+  password: Yup.string()
+});
 
 const formikObj = {
   mappedProps: mappingProps,
   handledSubmit: handleSubmit,
-  // validationSchema: yupSchema
+  validationSchema: yupSchema
 };
 
 const FinalFormHOC = withFormik(formikObj);
